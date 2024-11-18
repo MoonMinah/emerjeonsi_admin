@@ -132,11 +132,14 @@ public class AdminRestController {
         }
     }
 
-    @PostMapping("/exhibitions-origin/save")
+    @PostMapping("/exhibitions/save")
     public String saveExhibitions(@RequestBody Map<String, Object> data) {
         List<Exhibition> exhibitions = (List<Exhibition>) data.get("exhibitions"); // "exhibitions" 키에 맞게 조정
         if (exhibitions != null && !exhibitions.isEmpty()) {
-            adminService.saveExhibitions(exhibitions);
+            int resultExhibitionData = adminService.saveExhibitions(exhibitions);
+            // resultExhibitionData가 1이면 참, 0이면 거짓 데이터 유효성 검사 진행 로직 작성 필요
+            // 1이면 등록되어있는 데이터, 0이면 에러 처리
+
             return "데이터 저장 완료";
         } else {
             return "저장할 데이터가 없습니다.";

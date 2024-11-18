@@ -6,4 +6,8 @@
     <select id="selectAdminByAdminId" parameterType="String" resultType="com.kosa.emerjeonsibackadmin.dto.Admin">
         SELECT * FROM TB_Admins_Master WHERE adminId = #{adminId}
     </select>
+
+    <insert id="saveExhibitions" parameterType="List">
+        INSERT INTO TB_Exhibitions_Master () VALUES ()
+    </insert>
 </mapper>
