@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kosa.emerjeonsibackadmin.mapper.UserMapper">
+    <select id="selectAllUsers" parameterType="List" resultType="com.kosa.emerjeonsibackadmin.dto.User">
+        SELECT * FROM TB_Users_Master WHERE status = "활성"
+    </select>
+
+    <select id="selectUserByUserNo" parameterType="int" resultType="com.kosa.emerjeonsibackadmin.dto.User">
+        SELECT * FROM TB_Users_Master WHERE userNo = #{userNo}
+    </select>
+</mapper>
