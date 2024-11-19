@@ -4,16 +4,20 @@ import com.kosa.emerjeonsibackadmin.dto.Exhibition;
 import com.kosa.emerjeonsibackadmin.dto.User;
 import com.kosa.emerjeonsibackadmin.service.AdminService;
 import com.kosa.emerjeonsibackadmin.service.UserService;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
@@ -74,6 +78,42 @@ public class AdminRestController {
         }
 
         return ResponseEntity.ok(user);
+    }
+
+    // 회원 정보 수정
+    @PutMapping("/users/{userNo}")
+    public ResponseEntity<?> updateUser(@PathVariable int userNo, @RequestBody @Valid User user, BindingResult result) {
+        // 유효성 검사 실패 시, 오류 메시지 던짐
+        if(result.hasErrors()) {
+            Map<String, String> errorMessages = new HashMap<>();
+
+            for(FieldError error : result.getFieldErrors()) {
+                String fieldName = error.getField();
+                String errorMessage = error.getDefaultMessage();
+                System.out.println("FieldName : " + fieldName);
+                System.out.println("ErrorMessage : " + errorMessage);
+
+                errorMessages.put(fieldName, errorMessage);
+            }
+
+            return ResponseEntity.badRequest().body(errorMessages);
+        }
+
+        try {
+            log.info("updateUser() : userNo = {} / userData = {}", userNo, user);
+
+            boolean updateResult = userService.updateUser(userNo, user);
+
+            if(updateResult) {
+                return ResponseEntity.ok("회원 정보 수정이 완료되었습니다.");
+            } else {
+                return ResponseEntity.status(400).body("회원 정보를 수정할 수 없습니다.");
+            }
+        } catch (Exception e) {
+            log.error("회원 정보 수정 중 오류 발생 : {}", e.getMessage(), e);
+
+            return ResponseEntity.status(500).body("회원 정보 수정 중 서버 오류가 발생했습니다.");
+        }
     }
 
     @GetMapping("/exhibitions-origin")

@@ -15,4 +15,6 @@ public interface UserMapper {
     public int countAllUsers();
 
     public User selectUserByUserNo(int userNo);
+
+    public int updateUserData(User user);
 }
