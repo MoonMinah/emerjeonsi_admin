@@ -7,6 +7,16 @@
         SELECT * FROM TB_Users_Master WHERE status = "활성"
     </select>
 
+    <select id="selectUsersWithPagination" parameterType="map" resultType="com.kosa.emerjeonsibackadmin.dto.User">
+        SELECT * FROM TB_Users_Master WHERE status = "활성"
+        ORDER BY userNo ASC
+        LIMIT #{size} OFFSET #{offset}
+    </select>
+
+    <select id="countAllUsers" resultType="int">
+        SELECT COUNT(*) FROM TB_Users_Master WHERE status = "활성"
+    </select>
+
     <select id="selectUserByUserNo" parameterType="int" resultType="com.kosa.emerjeonsibackadmin.dto.User">
         SELECT * FROM TB_Users_Master WHERE userNo = #{userNo}
     </select>
