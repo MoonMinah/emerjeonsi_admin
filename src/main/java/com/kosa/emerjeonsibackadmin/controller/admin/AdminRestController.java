@@ -15,6 +15,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -33,9 +34,32 @@ public class AdminRestController {
         this.restTemplate = restTemplate;
     }
 
+//    @GetMapping("/users")
+//    public List<User> getAllUsers() {
+//        return userService.selectAllUsers();
+//    }
+
     @GetMapping("/users")
-    public List<User> getAllUsers() {
-        return userService.selectAllUsers();
+    public ResponseEntity<Map<String, Object>> getUserWithPagination(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int size) {
+        // 요청 파라미터로 받은 페이지와 크기를 사용하여 데이터 조회
+        List<User> users = userService.selectUsersWithPagination(page, size);
+        // 전체 유저 수 조회
+        int totalUsers = userService.countAllUsers();
+        // 전체 페이지 수 계산
+        int totalPages = (int) Math.ceil((double) totalUsers / size);
+
+        // response 데이터 Map으로 구성
+        Map<String, Object> response = new HashMap<>();
+        // 현재 페이지 데이터
+        response.put("users", users);
+        // 현재 페이지 번호
+        response.put("currentPage", page);
+        // 총 페이지 수
+        response.put("totalPages", totalPages);
+        // 총 회원 수
+        response.put("totalUsers", totalUsers);
+
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/users/{userNo}")

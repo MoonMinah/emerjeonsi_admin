@@ -114,40 +114,7 @@
                                 서비스 회원 목록
                             </div>
                             <div class="card-body table-responsive-xxl">
-<%--                                <table id="datatablesSimple">--%>
-<%--                                    <thead>--%>
-<%--                                        <tr>--%>
-<%--                                            <th>회원 번호</th>--%>
-<%--                                            <th>회원 아이디</th>--%>
-<%--                                            <th>이메일 주소</th>--%>
-<%--                                            <th>이름</th>--%>
-<%--                                            <th>성별</th>--%>
-<%--                                            <th>생년월일</th>--%>
-<%--                                            <th>전화번호</th>--%>
-<%--                                            <th>로그인 종류</th>--%>
-<%--                                            <th>상세보기</th>--%>
-<%--                                            <th>강퇴</th>--%>
-<%--                                        </tr>--%>
-<%--                                    </thead>--%>
-<%--                                    <tfoot>--%>
-<%--                                        <tr>--%>
-<%--                                            <th>회원 번호</th>--%>
-<%--                                            <th>회원 아이디</th>--%>
-<%--                                            <th>이메일 주소</th>--%>
-<%--                                            <th>이름</th>--%>
-<%--                                            <th>성별</th>--%>
-<%--                                            <th>생년월일</th>--%>
-<%--                                            <th>전화번호</th>--%>
-<%--                                            <th>로그인 종류</th>--%>
-<%--                                            <th>상세보기</th>--%>
-<%--                                            <th>강퇴</th>--%>
-<%--                                        </tr>--%>
-<%--                                    </tfoot>--%>
-<%--                                    <tbody>--%>
-
-<%--                                    </tbody>--%>
-<%--                                </table>--%>
-                                <table class="table table-bordered table-striped table-hover">
+                                <table class="table table-bordered table-striped table-hover" style="text-align: center">
                                     <thead>
                                         <tr>
                                             <th scope="col">회원 번호</th>
@@ -163,9 +130,16 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-
+                                        <!-- 데이터는 js로 채워지게 한다. -->
                                     </tbody>
                                 </table>
+
+                                <!-- 페이징 버튼을 위한 div 추가 -->
+                                <div id="paginationContainer" class="pagination-container">
+                                    <ul class="pagination justify-content-center">
+                                        <!-- 페이징 버튼은 여기에 동적으로 추가됩니다. -->
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -187,6 +161,6 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
         <script src="/admin/js/scripts.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
-        <script src="/admin/js/datatables-simple-demo.js"></script>
+        <script src="/admin/js/usersTable.js"></script>
     </body>
 </html>

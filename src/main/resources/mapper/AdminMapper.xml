@@ -7,7 +7,7 @@
         SELECT * FROM TB_Admins_Master WHERE adminId = #{adminId}
     </select>
 
-    <insert id="saveExhibitions" parameterType="List">
-        INSERT INTO TB_Exhibitions_Master () VALUES ()
-    </insert>
+<!--    <insert id="saveExhibitions" parameterType="List">-->
+<!--        INSERT INTO TB_Exhibitions_Master () VALUES ()-->
+<!--    </insert>-->
 </mapper>
