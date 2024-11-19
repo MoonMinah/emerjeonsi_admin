@@ -44,4 +44,53 @@ public class UserServiceImpl implements UserService {
     public User selectUserByUserNo(int userNo) {
         return userMapper.selectUserByUserNo(userNo);
     }
+
+    @Override
+    public boolean updateUser(int userNo, User user) {
+        try {
+            log.info("updateUser() : userNo = {} / user = {}", userNo, user);
+
+            User resultUser = selectUserByUserNo(userNo);
+
+            if(resultUser == null) {
+                log.warn("userNo {}로 조회한 결과 User 데이터가 존재하지 않습니다.", userNo);
+
+                return false;
+            }
+
+            // 받은 데이터를 User 객체에 set
+            if(user.getEmail() != null) {
+                resultUser.setEmail(user.getEmail());
+            }
+
+            if(user.getUserName() != null) {
+                resultUser.setUserName(user.getUserName());
+            }
+
+            if(user.getGender() != null) {
+                resultUser.setGender(user.getGender());
+            }
+
+            if(user.getBirthday() != null) {
+                resultUser.setBirthday(user.getBirthday());
+            }
+
+            if(user.getPhone() != null) {
+                resultUser.setPhone(user.getPhone());
+            }
+
+            // 수정된 회원 정보 저장
+            int updateResult = updateUserData(resultUser);
+
+            return updateResult > 0;
+        } catch (Exception e) {
+            log.error("userNo {}의 회원 정보 수정 중 오류 발생 : {}", userNo, e.getMessage(), e);
+
+            return false;
+        }
+    }
+
+    public int updateUserData(User user) {
+        return userMapper.updateUserData(user);
+    }
 }

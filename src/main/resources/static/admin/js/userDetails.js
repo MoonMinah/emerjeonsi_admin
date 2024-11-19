@@ -109,9 +109,15 @@ document.addEventListener("DOMContentLoaded", function () {
                     emailInput.setAttribute('name', 'email');
                     emailInput.setAttribute('value', user.email);
 
+                    // 이메일 오류 메시지 표시 div 추가
+                    const emailErrorDiv = document.createElement('div');
+                    emailErrorDiv.classList.add('error-message', 'text-danger');
+
+                    emailInputDiv.appendChild(emailInput);
+                    emailInputDiv.appendChild(emailErrorDiv);
                     emailDiv.appendChild(emailLabel);
                     emailDiv.appendChild(emailInputDiv);
-                    emailInputDiv.appendChild(emailInput);
+
                     form.appendChild(emailDiv);
 
                     // 이름 폼 필드
@@ -133,9 +139,15 @@ document.addEventListener("DOMContentLoaded", function () {
                     userNameInput.setAttribute('name', 'userName');
                     userNameInput.setAttribute('value', user.userName);
 
+                    // 이름 오류 메시지 표시 div 추가
+                    const userNameErrorDiv = document.createElement('div');
+                    userNameErrorDiv.classList.add('error-message', 'text-danger');
+
+                    userNameInputDiv.appendChild(userNameInput);
+                    userNameInputDiv.appendChild(userNameErrorDiv);
                     userNameDiv.appendChild(userNameLabel);
                     userNameDiv.appendChild(userNameInputDiv);
-                    userNameInputDiv.appendChild(userNameInput);
+
                     form.appendChild(userNameDiv);
 
                     // 성별 라디오 버튼
@@ -179,6 +191,10 @@ document.addEventListener("DOMContentLoaded", function () {
                     femaleRadioLabel.classList.add('form-check-label');
                     femaleRadioLabel.setAttribute('for', 'genderFemale');
 
+                    // 성별 오류 메시지 표시 div 추가
+                    const genderErrorDiv = document.createElement('div');
+                    genderErrorDiv.classList.add('error-message', 'text-danger');
+
                     genderDiv.appendChild(genderLabel);
                     genderDiv.appendChild(genderRadioDiv);
 
@@ -191,6 +207,9 @@ document.addEventListener("DOMContentLoaded", function () {
                     femaleRadioDiv.appendChild(femaleRadio);
                     femaleRadioDiv.appendChild(femaleRadioLabel);
                     genderRadioDiv.appendChild(document.createTextNode('여'));
+
+                    // 성별 오류 메시지 추가
+                    genderDiv.appendChild(genderErrorDiv);
 
                     form.appendChild(genderDiv);
 
@@ -213,9 +232,15 @@ document.addEventListener("DOMContentLoaded", function () {
                     birthdayInput.setAttribute('name', 'birthday');
                     birthdayInput.setAttribute('value', user.birthday);
 
+                    // 생일 오류 메시지 표시 div 추가
+                    const birthdayErrorDiv = document.createElement('div');
+                    birthdayErrorDiv.classList.add('error-message', 'text-danger');
+
+                    birthdayInputDiv.appendChild(birthdayInput);
+                    birthdayInputDiv.appendChild(birthdayErrorDiv);
                     birthdayDiv.appendChild(birthdayLabel);
                     birthdayDiv.appendChild(birthdayInputDiv);
-                    birthdayInputDiv.appendChild(birthdayInput);
+
                     form.appendChild(birthdayDiv);
 
                     // 전화번호 폼 필드
@@ -237,9 +262,15 @@ document.addEventListener("DOMContentLoaded", function () {
                     phoneInput.setAttribute('name', 'phone');
                     phoneInput.setAttribute('value', user.phone);
 
+                    // 전화번호 오류 메시지 표시 div 추가
+                    const phoneErrorDiv = document.createElement('div');
+                    phoneErrorDiv.classList.add('error-message', 'text-danger');
+
+                    phoneInputDiv.appendChild(phoneInput);
+                    phoneInputDiv.appendChild(phoneErrorDiv);
                     phoneDiv.appendChild(phoneLabel);
                     phoneDiv.appendChild(phoneInputDiv);
-                    phoneInputDiv.appendChild(phoneInput);
+
                     form.appendChild(phoneDiv);
 
                     // 서비스 제공자(readonly)
@@ -269,26 +300,50 @@ document.addEventListener("DOMContentLoaded", function () {
                     form.appendChild(providerDiv);
 
                     // 수정하기 버튼
-                    const updateBtnDiv = document.createElement('div');
-                    updateBtnDiv.classList.add('d-grid', 'gap-2', 'col-6', 'mx-auto');
+                    const BtnDiv = document.createElement('div');
+                    BtnDiv.classList.add('d-grid', 'gap-2', 'col-6', 'mx-auto');
 
                     const updateBtn = document.createElement('input');
-                    updateBtn.setAttribute('type', 'submit');
+                    updateBtn.setAttribute('type', 'button');
                     updateBtn.classList.add('btn', 'btn-primary', 'mb-3');
                     updateBtn.setAttribute('value', '수정하기');
 
-                    updateBtnDiv.appendChild(updateBtn);
-                    form.appendChild(updateBtnDiv);
+                    // 취소 버튼 추가
+                    const cancelBtn = document.createElement('input');
+                    cancelBtn.setAttribute('type', 'button');
+                    cancelBtn.classList.add('btn', 'btn-secondary', 'mb-3');
+                    cancelBtn.setAttribute('value', '취소');
+
+                    BtnDiv.appendChild(updateBtn);
+                    BtnDiv.appendChild(cancelBtn);
+
+                    form.appendChild(BtnDiv);
 
                     // 폼을 card-body에 추가
                     cardBody.appendChild(form);
 
-                    // 성별에 맞는 라디오 버튼 체크
-                    if (user.gender === '남') {
-                        maleRadio.checked = true;
-                    } else if (user.gender === '여') {
-                        femaleRadio.checked = true;
+                    const genderMale = document.getElementById('genderMale');
+                    const genderFemale = document.getElementById('genderFemale');
+
+                    if(genderMale && genderFemale) {
+                        if(user.gender === '남') {
+                            genderMale.checked = true;
+                        } else if(user.gender === '여') {
+                            genderFemale.checked = true;
+                        } else {
+                            // 'N/A'일 경우, 선택 해제
+                            genderMale.checked = false;
+                            genderFemale.checked = false;
+                        }
                     }
+
+                    // 수정 버튼 이벤트
+                    updateBtn.addEventListener('click', () => updateBtnClick(userNo, form));
+
+                    // 취소 버튼 이벤트
+                    cancelBtn.addEventListener('click', () => {
+                       window.location.href = "/admin/users";
+                    });
                 }
             })
             .catch(error => {
@@ -297,5 +352,88 @@ document.addEventListener("DOMContentLoaded", function () {
     } else {
         console.error("사용자 번호를 찾을 수 없습니다.");
     }
-
 });
+
+function updateBtnClick(userNo, form) {
+    const formData = new FormData(form);
+
+    // FormData -> JSON 변환
+    const data = {};
+    formData.forEach((value, key) => {
+        data[key] = value;
+    });
+
+    axios.put(`/api/admin/users/${userNo}`, data)
+        .then(() => {
+            alert("회원 정보 수정이 완료되었습니다.");
+
+            window.location.href = "/admin/users";
+        })
+        .catch(error => {
+            if(error.response) {
+                // 서버에서 반환한 응답이 있을 경우
+                if(error.response.status === 400) {
+                    // 유효성 검사 실패 시 오류 메시지 출력
+                    console.error('유효성 검사 실패 : ', error.response.data);
+
+                    const errorMessages = error.response.data;
+
+                    displayValidationErrors(errorMessages);
+                } else {
+                    // 다른 오류 발생 시 오류 메시지 출력
+                    console.error('회원 정보 수정 중 오류 발생 : ', error.response.data);
+
+                    alert("회원 정보 수정에 실패했습니다.");
+                }
+            } else {
+                console.error('서버 응답 오류 : ', error);
+
+                alert("서버 오류가 발생했습니다.");
+            }
+        });
+}
+
+// 유효성 검사 오류 메시지 표시
+function displayValidationErrors(errorMessages) {
+    console.log("서버에서 받은 오류 메시지 : ", errorMessages);
+
+    // 기존 오류 메시지 초기화
+    const errorElements = document.querySelectorAll('.error-message');
+    errorElements.forEach(element => {
+        element.textContent = '';
+        element.classList.remove('show');
+    });
+
+    const invalidFields = document.querySelectorAll('.is-invalid');
+    invalidFields.forEach(field => {
+        field.classList.remove('is-invalid'); // 기존 클래스 제거
+    });
+
+    // 오류 메시지를 각 필드 아래에 추가
+    for (let field in errorMessages) {
+        const message = errorMessages[field];
+        console.log('검사 중인 필드 :', field);
+
+        // 여기서 '0', '1' 등 숫자형 키를 텍스트로 변환하거나 필드명을 맞추도록 수정
+        const fieldElement = document.getElementById(field); // 숫자형을 문자열로 변환
+
+        console.log('필드 요소 : ', fieldElement);
+
+        if (fieldElement) {
+            let errorDiv = fieldElement.parentElement.querySelector('.error-message');
+            console.log(errorDiv);
+
+            if (!errorDiv) {
+                errorDiv = document.createElement('div');
+                errorDiv.classList.add('error-message', 'text-danger');
+                fieldElement.parentElement.appendChild(errorDiv);
+            }
+
+            errorDiv.textContent = message;
+            errorDiv.classList.add('show');
+            fieldElement.classList.add('is-invalid');
+        } else {
+            console.warn(`오류 필드를 찾을 수 없습니다: ${field}`);
+        }
+    }
+}

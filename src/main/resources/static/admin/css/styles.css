@@ -11319,3 +11319,14 @@ body {
 .login-input-font {
   font-family: SCDream3;
 }
+
+.error-message {
+  display: none;  /* 기본적으로 숨기기 */
+  font-size: 0.875rem; /* 작은 글씨 */
+  color: #dc3545; /* 빨간색 */
+  margin-top: 0.25rem;
+}
+
+.error-message.show {
+  display: block;  /* 오류 메시지 보이기 */
+}

@@ -20,4 +20,9 @@
     <select id="selectUserByUserNo" parameterType="int" resultType="com.kosa.emerjeonsibackadmin.dto.User">
         SELECT * FROM TB_Users_Master WHERE userNo = #{userNo}
     </select>
+
+    <update id="updateUserData" parameterType="User">
+        UPDATE TB_Users_Master SET email = #{email}, userName = #{userName}, gender = #{gender}, birthday = #{birthday}, phone = #{phone}
+        WHERE userNo = #{userNo}
+    </update>
 </mapper>
