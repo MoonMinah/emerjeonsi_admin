@@ -15,4 +15,6 @@ public interface UserService {
     public User selectUserByUserNo(int userNo);
 
     public boolean updateUser(int userNo, User user);
+
+    public void banUser(int userNo);
 }

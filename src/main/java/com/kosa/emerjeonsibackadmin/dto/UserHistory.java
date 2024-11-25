@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 public class UserHistory {
     private int userHistoryNo;
     private int userNo;
+    private String userId;
     private String userStatus;
     private LocalDateTime userEventTimestamp;
     private LocalDateTime retentionUntil;
