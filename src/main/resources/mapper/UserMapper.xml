@@ -4,17 +4,17 @@
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.kosa.emerjeonsibackadmin.mapper.UserMapper">
     <select id="selectAllUsers" parameterType="List" resultType="com.kosa.emerjeonsibackadmin.dto.User">
-        SELECT * FROM TB_Users_Master WHERE status = "활성"
+        SELECT * FROM TB_Users_Master WHERE userStatus = "활성"
     </select>
 
     <select id="selectUsersWithPagination" parameterType="map" resultType="com.kosa.emerjeonsibackadmin.dto.User">
-        SELECT * FROM TB_Users_Master WHERE status = "활성"
+        SELECT * FROM TB_Users_Master WHERE userStatus = "활성"
         ORDER BY userNo ASC
         LIMIT #{size} OFFSET #{offset}
     </select>
 
     <select id="countAllUsers" resultType="int">
-        SELECT COUNT(*) FROM TB_Users_Master WHERE status = "활성"
+        SELECT COUNT(*) FROM TB_Users_Master WHERE userStatus = "활성"
     </select>
 
     <select id="selectUserByUserNo" parameterType="int" resultType="com.kosa.emerjeonsibackadmin.dto.User">
@@ -23,6 +23,11 @@
 
     <update id="updateUserData" parameterType="User">
         UPDATE TB_Users_Master SET email = #{email}, userName = #{userName}, gender = #{gender}, birthday = #{birthday}, phone = #{phone}
+        WHERE userNo = #{userNo}
+    </update>
+
+    <update id="updateUserStatusToBanned" parameterType="int">
+        UPDATE TB_Users_Master SET userStatus = "강퇴"
         WHERE userNo = #{userNo}
     </update>
 </mapper>

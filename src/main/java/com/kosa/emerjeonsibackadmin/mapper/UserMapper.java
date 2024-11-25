@@ -17,4 +17,6 @@ public interface UserMapper {
     public User selectUserByUserNo(int userNo);
 
     public int updateUserData(User user);
+
+    public int updateUserStatusToBanned(int userNo);
 }

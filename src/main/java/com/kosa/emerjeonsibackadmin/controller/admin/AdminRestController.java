@@ -2,13 +2,16 @@ package com.kosa.emerjeonsibackadmin.controller.admin;
 
 import com.kosa.emerjeonsibackadmin.dto.Exhibition;
 import com.kosa.emerjeonsibackadmin.dto.User;
+import com.kosa.emerjeonsibackadmin.dto.UserHistory;
 import com.kosa.emerjeonsibackadmin.service.AdminService;
+import com.kosa.emerjeonsibackadmin.service.UserHistoryService;
 import com.kosa.emerjeonsibackadmin.service.UserService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -28,12 +31,15 @@ import java.util.Map;
 @RequestMapping("/api/admin")
 public class AdminRestController {
     private final UserService userService;
+
+    private final UserHistoryService userHistoryService;
     private final AdminService adminService;
     private final RestTemplate restTemplate;
     private JSONObject jsonObject;
 
-    public AdminRestController(UserService userService, AdminService adminService, RestTemplate restTemplate) {
+    public AdminRestController(UserService userService, UserHistoryService userHistoryService, AdminService adminService, RestTemplate restTemplate) {
         this.userService = userService;
+        this.userHistoryService = userHistoryService;
         this.adminService = adminService;
         this.restTemplate = restTemplate;
     }
@@ -113,6 +119,35 @@ public class AdminRestController {
             log.error("회원 정보 수정 중 오류 발생 : {}", e.getMessage(), e);
 
             return ResponseEntity.status(500).body("회원 정보 수정 중 서버 오류가 발생했습니다.");
+        }
+    }
+
+    @GetMapping("/users/history")
+    public ResponseEntity<Map<String, Object>> getUserHistoryWithPagination(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int size) {
+        List<UserHistory> users = userHistoryService.selectUserHistoryWithPagination(page, size);
+        int totalUserHistory = userHistoryService.countAllUserHistory();
+        int totalPages = (int) Math.ceil((double) totalUserHistory / size);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("users", users);
+        response.put("currentPage", page);
+        response.put("totalPages", totalPages);
+        response.put("totalUserHistory", totalUserHistory);
+
+        return ResponseEntity.ok(response);
+    }
+
+    // 회원 강퇴
+    @PostMapping("/users/ban")
+    public ResponseEntity<String> banUser(@RequestBody Map<String, Object> requestData) {
+        int userNo = (int) requestData.get("userNo");
+
+        try {
+            userService.banUser(userNo);
+
+            return ResponseEntity.ok("회원 강퇴가 완료되었습니다.");
+        } catch(Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("회원 강퇴 시도 중 오류 발생");
         }
     }
 

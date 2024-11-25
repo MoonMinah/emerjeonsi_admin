@@ -1,11 +1,14 @@
 package com.kosa.emerjeonsibackadmin.service.serviceImpl;
 
 import com.kosa.emerjeonsibackadmin.dto.User;
+import com.kosa.emerjeonsibackadmin.mapper.UserHistoryMapper;
 import com.kosa.emerjeonsibackadmin.mapper.UserMapper;
 import com.kosa.emerjeonsibackadmin.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,9 +17,11 @@ import java.util.Map;
 @Service
 public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
+    private final UserHistoryMapper userHistoryMapper;
 
-    public UserServiceImpl(UserMapper userMapper) {
+    public UserServiceImpl(UserMapper userMapper, UserHistoryMapper userHistoryMapper) {
         this.userMapper = userMapper;
+        this.userHistoryMapper = userHistoryMapper;
     }
 
     @Override
@@ -87,6 +92,26 @@ public class UserServiceImpl implements UserService {
             log.error("userNo {}의 회원 정보 수정 중 오류 발생 : {}", userNo, e.getMessage(), e);
 
             return false;
+        }
+    }
+
+    @Override
+    @Transactional
+    public void banUser(int userNo) {
+        // '강퇴'로 회원 상태 변경
+        int updateRows = userMapper.updateUserStatusToBanned(userNo);
+
+        if(updateRows == 0) {
+            throw new RuntimeException("회원 상태 업데이트 실패");
+        }
+
+        // retentionUntil 컬럼에 5년 후 일자 추가
+        LocalDateTime retentionUntil = LocalDateTime.now().plusYears(5);
+        // 회원 이력 테이블에 강퇴 이력과 retentionUntil 추가
+        int insertedRows = userHistoryMapper.insertUserHistory(userNo, "강퇴", retentionUntil);
+
+        if(insertedRows == 0) {
+            throw new RuntimeException("회원 이력 추가 실패");
         }
     }
 
