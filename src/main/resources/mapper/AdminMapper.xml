@@ -3,11 +3,53 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.kosa.emerjeonsibackadmin.mapper.AdminMapper">
-    <select id="selectAdminByAdminId" parameterType="String" resultType="com.kosa.emerjeonsibackadmin.dto.Admin">
+   <select id="selectAdminByAdminId" parameterType="String" resultType="com.kosa.emerjeonsibackadmin.dto.Admin">
         SELECT * FROM TB_Admins_Master WHERE adminId = #{adminId}
     </select>
 
-<!--    <insert id="saveExhibitions" parameterType="List">-->
-<!--        INSERT INTO TB_Exhibitions_Master () VALUES ()-->
-<!--    </insert>-->
+    <insert id="saveExhibitionData" parameterType="com.kosa.emerjeonsibackadmin.dto.ExhibitionData">
+        INSERT INTO TB_Exhibitions_Data (
+        title, cntcInsttNm, collectedDate, issuedDate, imageUrl,
+        localId, url, viewCount, subDescription, spatialCoverage, eventSite,
+        genre, duration, numberPages, tableOfContents, author, contactPoint,
+        actor, contributor, audience, charge, period, eventPeriod, description
+        )
+        VALUES (
+        #{title}, #{cntcInsttNm}, #{collectedDate}, #{issuedDate}, #{imageUrl},
+        #{localId}, #{url}, #{viewCount}, #{subDescription}, #{spatialCoverage}, #{eventSite},
+        #{genre}, #{duration}, #{numberPages}, #{tableOfContents}, #{author}, #{contactPoint},
+        #{actor}, #{contributor}, #{audience}, #{charge}, #{period}, #{eventPeriod}, #{description}
+        )
+    </insert>
+
+    <select id="getAllExhibitionsData" resultType="com.kosa.emerjeonsibackadmin.dto.ExhibitionData">
+        SELECT * FROM TB_Exhibitions_Data
+    </select>
+
+    <!--TB_Exhibitons_Master에 저장하는 로직-->
+    <insert id="saveExhibition" parameterType="com.kosa.emerjeonsibackadmin.dto.Exhibition">
+        INSERT INTO TB_Exhibitions_Master (
+        title, cntcInsttNm, issuedDate, imageUrl,
+        localId, viewCount, eventSite, contactPoint,
+        startPeriod, endPeriod, description, charge,
+        adultPrice, infantPrice, seniorPrice, exhibitionStatus
+        )
+        VALUES (
+        #{title}, #{cntcInsttNm}, #{issuedDate}, #{imageUrl},
+        #{localId}, #{viewCount}, #{eventSite}, #{contactPoint},
+        #{startPeriod}, #{endPeriod}, #{description}, #{charge},
+        #{adultPrice}, #{infantPrice}, #{seniorPrice}, #{exhibitionStatus}
+        )
+    </insert>
+
+    <select id="getAllExhibitions" resultType="com.kosa.emerjeonsibackadmin.dto.Exhibition">
+        SELECT * FROM TB_Exhibitions_Master
+    </select>
+
+    <!--하나의 TB_Exhibitions_Master 정보-->
+    <select id="getExhibitionByLocalId" resultType="com.kosa.emerjeonsibackadmin.dto.Exhibition">
+        SELECT * FROM TB_Exhibitions_Master WHERE localId = #{localId}
+    </select>
+
+
 </mapper>

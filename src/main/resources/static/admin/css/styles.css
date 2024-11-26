@@ -11330,3 +11330,45 @@ body {
 .error-message.show {
   display: block;  /* 오류 메시지 보이기 */
 }
+
+.scrollable-description {
+  max-width: 300px; /* 원하는 너비 설정 */
+}
+
+.description-text {
+  max-height: 100px; /* 고정 높이 */
+  overflow-y: auto; /* 세로 스크롤 활성화 */
+  white-space: nowrap; /* 텍스트를 한 줄로 제한 */
+  text-overflow: ellipsis; /* 잘린 텍스트에 '...' 추가 */
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  text-align: left;
+  padding: 10px;
+  border: 1px solid #ddd;
+  word-wrap: break-word;
+  vertical-align: top;
+}
+
+th {
+  background-color: #f4f4f4;
+  font-weight: bold;
+}
+
+td {
+  max-width: 200px; /* 열 너비를 제한 */
+}
+
+.scrollable-description {
+  max-height: 100px;
+  overflow-y: auto;
+}
+
+.description-text {
+  white-space: pre-wrap; /* 줄바꿈 지원 */
+}

@@ -11,6 +11,7 @@
         <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
         <link href="/admin/css/styles.css" rel="stylesheet" />
         <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     </head>
     <body class="sb-nav-fixed">
         <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
@@ -81,10 +82,6 @@
                                 <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
                                 서비스 현황 통계
                             </a>
-<%--                            <a class="nav-link" href="usersTable.jsp">--%>
-<%--                                <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>--%>
-<%--                                Tables--%>
-<%--                            </a>--%>
                         </div>
                     </div>
                     <div class="sb-sidenav-footer">
@@ -100,26 +97,6 @@
                         <ol class="breadcrumb mb-4">
                             <li class="breadcrumb-item active">대시보드</li>
                         </ol>
-                        <div class="row">
-                            <div class="col-xl-6">
-                                <div class="card mb-4">
-                                    <div class="card-header">
-                                        <i class="fas fa-chart-area me-1"></i>
-                                        차트 1
-                                    </div>
-                                    <div class="card-body"><canvas id="myAreaChart" width="100%" height="40"></canvas></div>
-                                </div>
-                            </div>
-                            <div class="col-xl-6">
-                                <div class="card mb-4">
-                                    <div class="card-header">
-                                        <i class="fas fa-chart-bar me-1"></i>
-                                        차트 2
-                                    </div>
-                                    <div class="card-body"><canvas id="myBarChart" width="100%" height="40"></canvas></div>
-                                </div>
-                            </div>
-                        </div>
                         <div class="card mb-4">
                             <div class="card-header">
                                 <i class="fas fa-table me-1"></i>
@@ -137,7 +114,9 @@
                                         <th>연락처</th>
                                     </tr>
                                     </thead>
-                                    <tbody id="exhibitionTableBody"></tbody>
+                                    <tbody id="exhibitionTableBody">
+                                    <!-- 데이터가 여기에 삽입됩니다 -->
+                                    </tbody>
 
                                 </table>
 
@@ -162,8 +141,6 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
         <script src="/admin/js/scripts.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
-        <script src="/admin/assets/demo/chart-area-demo.js"></script>
-        <script src="/admin/assets/demo/chart-bar-demo.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
         <script src="/admin/js/datatables-simple-demo.js"></script>
 
@@ -198,25 +175,42 @@
                         <td>\${exhibition.eventSite || 'N/A'}</td>
                         <td>\${exhibition.contactPoint || 'N/A'}</td>
                         <td class="scrollable-description">
-    <div
-        class="description-text"
-        data-full-description="\${exhibition.description || 'N/A'}">
-        \${exhibition.description.substring(0, 100) || 'N/A'}
-    </div>
-</td>
-                        <td><button type="button" class="edit-button" onclick="#">수정</button></td>
-                        <td><button type="button" class="save-button" data-index="\${index}">저장</button></td>
+                            <div class="description-text"
+                                data-full-description="\${exhibition.description || 'N/A'}">
+                                \${exhibition.description.substring(0, 100) || 'N/A'}
+                            </div>
+                        </td>
+                        <td>
+                        <button type="button" class="edit-button" onclick="editExhibition('\${exhibition.localId}')">수정</button>
+                        </td>
                     </tr>
                 `;
                         tableBody.insertAdjacentHTML('beforeend', row);
                     });
-
 
                 } catch (error) {
                     console.error('Error fetching exhibition data:', error);
                     alert('데이터를 불러오는 데 실패했습니다.');
                 }
             }
+
+            function editExhibition(localId) {
+                axios.get(`http://localhost:9401/api/admin/exhibitions/\${localId}`)
+                    .then(response => {
+                        const exhibition = response.data;
+                        // 데이터가 성공적으로 응답되면, 수정 폼에 값을 채웁니다
+                        // 예시: 해당 데이터를 form에 채워넣기
+                        document.getElementById('title').value = exhibition.title;
+                        document.getElementById('eventSite').value = exhibition.eventSite;
+                        // 필요한 다른 필드도 채워주세요
+                        window.location.href = '/admin/exhibitionsEdit';
+                    })
+                    .catch(error => {
+                        console.error('Error fetching exhibition data:', error);
+                        alert('전시회 데이터를 불러오는 데 실패했습니다.');
+                    });
+            }
+
         </script>
     </body>
 </html>
