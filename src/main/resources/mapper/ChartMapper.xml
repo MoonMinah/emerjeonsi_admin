@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kosa.emerjeonsibackadmin.mapper.ChartMapper">
+    <!-- 월별 총 매출 -->
+    <select id="getMonthlySales" resultType="com.kosa.emerjeonsibackadmin.dto.MonthTotalAmountChart">
+        SELECT
+        DATE_FORMAT(paymentDate, '%Y-%m') AS month,
+        SUM(paymentPrice) AS totalSales
+        FROM tb_payments_master
+        GROUP BY DATE_FORMAT(paymentDate, '%Y-%m')
+        ORDER BY DATE_FORMAT(paymentDate, '%Y-%m');
+    </select>
+
+    <!-- 연령대별 회원 수 -->
+    <select id="getUserAgeGroups" resultType="com.kosa.emerjeonsibackadmin.dto.UserAgeGroupChart">
+        SELECT
+        CASE
+        WHEN TIMESTAMPDIFF(YEAR, birthday, CURDATE()) BETWEEN 10 AND 19 THEN '10대'
+        WHEN TIMESTAMPDIFF(YEAR, birthday, CURDATE()) BETWEEN 20 AND 29 THEN '20대'
+        WHEN TIMESTAMPDIFF(YEAR, birthday, CURDATE()) BETWEEN 30 AND 39 THEN '30대'
+        WHEN TIMESTAMPDIFF(YEAR, birthday, CURDATE()) BETWEEN 40 AND 49 THEN '40대'
+        ELSE '50대 이상'
+        END AS ageGroup,
+        COUNT(*) AS userCount
+        FROM tb_users_master
+        GROUP BY ageGroup
+        ORDER BY ageGroup;
+    </select>
+
+
+    <!--전시별 예약 비율 -->
+    <select id="getExhibitionReservationCount" resultType="map">
+        SELECT
+        em.title AS exhibitionName,
+        COUNT(DISTINCT rm.reservationNo) AS reservationCount,
+        COUNT(DISTINCT pm.paymentNo) AS paymentCount
+        FROM tb_exhibitions_master em
+        LEFT JOIN tb_reservations_master rm ON em.exhibitionNo = rm.exhibitionNo
+        LEFT JOIN tb_payments_master pm ON rm.reservationNo = pm.reservationNo
+        WHERE pm.paymentStatus = '결제성공'
+        GROUP BY em.title
+        ORDER BY reservationCount DESC;
+    </select>
+
+    <!--  시간별 매출  -->
+    <select id="getHourlySales" resultType="map">
+        SELECT
+        HOUR(paymentDate) AS hour,
+        SUM(paymentPrice) AS totalSales
+        FROM tb_payments_master
+        WHERE DATE(paymentDate) = #{date}
+        GROUP BY HOUR(paymentDate)
+        ORDER BY hour;
+    </select>
+</mapper>

@@ -4,8 +4,10 @@ import com.kosa.emerjeonsibackadmin.dto.Exhibition;
 import com.kosa.emerjeonsibackadmin.dto.ExhibitionData;
 import com.kosa.emerjeonsibackadmin.dto.User;
 import com.kosa.emerjeonsibackadmin.dto.UserHistory;
+import com.kosa.emerjeonsibackadmin.dto.*;
 import com.kosa.emerjeonsibackadmin.service.AdminService;
 import com.kosa.emerjeonsibackadmin.service.UserHistoryService;
+import com.kosa.emerjeonsibackadmin.service.ChartService;
 import com.kosa.emerjeonsibackadmin.service.UserService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +24,6 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -37,16 +38,22 @@ public class AdminRestController {
     private final UserService userService;
 
     private final UserHistoryService userHistoryService;
+    private final ChartService chartService;
     private final AdminService adminService;
     private final RestTemplate restTemplate;
     private JSONObject jsonObject;
 
-    public AdminRestController(UserService userService, UserHistoryService userHistoryService, AdminService adminService, RestTemplate restTemplate) {
+
+
+
+    public AdminRestController(UserService userService, UserHistoryService userHistoryService, ChartService chartService, AdminService adminService, RestTemplate restTemplate) {
         this.userService = userService;
         this.userHistoryService = userHistoryService;
+        this.chartService = chartService;
         this.adminService = adminService;
         this.restTemplate = restTemplate;
     }
+
 
 //    @GetMapping("/users")
 //    public List<User> getAllUsers() {
@@ -307,4 +314,55 @@ public class AdminRestController {
             return ResponseEntity.status(500).body(null);
         }
     }
+
+    // 월별 총 매출
+    @GetMapping("/monthlySales")
+    public ResponseEntity<List<MonthTotalAmountChart>> getMonthlySales() {
+        List<MonthTotalAmountChart> monthlySales = chartService.getMonthlySales();
+        if (monthlySales.isEmpty()) {
+            return ResponseEntity.noContent().build(); // 데이터가 없는 경우 204 No Content 반환
+        }
+        return ResponseEntity.ok(monthlySales); // 성공적으로 데이터 반환
+    }
+
+    // 연령대별 회원 수
+    @GetMapping("/userAgeGroups")
+    public ResponseEntity<List<UserAgeGroupChart>> getUserAgeGroups() {
+        List<UserAgeGroupChart> userAgeGroups = chartService.getUserAgeGroups();
+        log.info("userAgeGroups : " + userAgeGroups);
+        if (userAgeGroups.isEmpty()) {
+            return ResponseEntity.noContent().build(); // 데이터가 없는 경우 204 No Content 반환
+        }
+        return ResponseEntity.ok(userAgeGroups);
+    }
+
+    /**
+     * 전시 별 예매 수
+     * @return
+     */
+    @GetMapping("/exhibitionReservations")
+    public ResponseEntity<List<Map<String, Object>>> getExhibitionReservations() {
+        List<Map<String, Object>> reservations = chartService.getExhibitionReservationCount();
+        log.info("reservations : " + reservations);
+        if (reservations.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(reservations);
+    }
+
+    /**
+     * 시간별 총 매출
+     * @param date
+     * @return
+     */
+    @GetMapping("/hourlySales")
+    public ResponseEntity<List<Map<String, Object>>> getHourlySales(@RequestParam String date) {
+        List<Map<String, Object>> hourlySales = chartService.getHourlySales(date);
+        log.info("hourlySales : " + hourlySales);
+        if (hourlySales.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(hourlySales);
+    }
+
 }

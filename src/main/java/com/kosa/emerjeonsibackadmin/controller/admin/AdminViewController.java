@@ -54,4 +54,9 @@ public class AdminViewController {
     public String exhibitionsEdit() {
         return "exhibitionsEdit";
     }
+
+    @GetMapping("/chart")
+    public String chartData() {
+        return "charts";
+    }
 }
