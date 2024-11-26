@@ -70,8 +70,9 @@
                                     </a>
                                     <div class="collapse" id="pagesCollapseError" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordionPages">
                                         <nav class="sb-sidenav-menu-nested nav">
-                                            <a class="nav-link" href="#">전체 전시회 조회</a>
-                                            <a class="nav-link" href="#">서비스 전시 이력</a>
+                                            <a class="nav-link" href="/admin/exhibitionsData">api 데이터</a>
+                                            <a class="nav-link" href="/admin/exhibitionsDataEdit">원본 데이터</a>
+                                            <a class="nav-link" href="/admin/exhibitions">전시 데이터</a>
                                         </nav>
                                     </div>
                                 </nav>

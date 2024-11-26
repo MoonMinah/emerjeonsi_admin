@@ -11,6 +11,7 @@
         <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
         <link href="/admin/css/styles.css" rel="stylesheet" />
         <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     </head>
     <body class="sb-nav-fixed">
         <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
@@ -81,10 +82,6 @@
                                 <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
                                 서비스 현황 통계
                             </a>
-<%--                            <a class="nav-link" href="usersTable.jsp">--%>
-<%--                                <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>--%>
-<%--                                Tables--%>
-<%--                            </a>--%>
                         </div>
                     </div>
                     <div class="sb-sidenav-footer">
@@ -100,26 +97,6 @@
                         <ol class="breadcrumb mb-4">
                             <li class="breadcrumb-item active">대시보드</li>
                         </ol>
-                        <div class="row">
-                            <div class="col-xl-6">
-                                <div class="card mb-4">
-                                    <div class="card-header">
-                                        <i class="fas fa-chart-area me-1"></i>
-                                        차트 1
-                                    </div>
-                                    <div class="card-body"><canvas id="myAreaChart" width="100%" height="40"></canvas></div>
-                                </div>
-                            </div>
-                            <div class="col-xl-6">
-                                <div class="card mb-4">
-                                    <div class="card-header">
-                                        <i class="fas fa-chart-bar me-1"></i>
-                                        차트 2
-                                    </div>
-                                    <div class="card-body"><canvas id="myBarChart" width="100%" height="40"></canvas></div>
-                                </div>
-                            </div>
-                        </div>
                         <div class="card mb-4">
                             <div class="card-header">
                                 <i class="fas fa-table me-1"></i>
@@ -131,13 +108,32 @@
                                     <tr>
                                         <th>전시명</th>
                                         <th>연계기관명</th>
+                                        <th>수집일</th>
+                                        <th>자료생성일자</th>
+                                        <th>이미지</th>
                                         <th>전시ID</th>
+                                        <th>URL</th>
+                                        <th>조회수</th>
+                                        <th>보조 설명</th>
+                                        <th>공간 범위</th>
                                         <th>행사 장소</th>
-                                        <th>전시회 소개</th>
+                                        <th>장르</th>
+                                        <th>기간</th>
+                                        <th>페이지 수</th>
+                                        <th>목차</th>
+                                        <th>저자</th>
                                         <th>연락처</th>
+                                        <th>기여자</th>
+                                        <th>관람객</th>
+                                        <th>요금</th>
+                                        <th>기간</th>
+                                        <th>행사 기간</th>
+                                        <th>전시회 소개</th>
                                     </tr>
                                     </thead>
-                                    <tbody id="exhibitionTableBody"></tbody>
+                                    <tbody id="exhibitionTableBody">
+                                    <!-- 데이터가 여기에 삽입됩니다 -->
+                                    </tbody>
 
                                 </table>
 
@@ -162,8 +158,6 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
         <script src="/admin/js/scripts.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
-        <script src="/admin/assets/demo/chart-area-demo.js"></script>
-        <script src="/admin/assets/demo/chart-bar-demo.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
         <script src="/admin/js/datatables-simple-demo.js"></script>
 
@@ -173,7 +167,7 @@
             async function loadExhibitionData() {
                 try {
                     // Axios를 이용한 GET 요청
-                    const response = await axios.get('http://localhost:9401/api/admin/exhibitions', {
+                    const response = await axios.get('http://localhost:9401/api/admin/exhibitionsDataEdit', {
                         headers: {
                             'Content-Type': 'application/json'
                         }
@@ -194,9 +188,31 @@
                     <tr>
                         <td>\${exhibition.title || 'N/A'}</td>
                         <td>\${exhibition.cntcInsttNm || 'N/A'}</td>
+                        <td>\${exhibition.collectedDate || 'N/A'}</td>
+                        <td>\${exhibition.issuedDate || 'N/A'}</td>
+                        <td>\${exhibition.imageUrl || 'N/A'}</td>
                         <td>\${exhibition.localId || 'N/A'}</td>
+                        <td>\${exhibition.url || 'N/A'}</td>
+                        <td>\${exhibition.viewCount || 'N/A'}</td>
+                        <td>\${exhibition.subDescription || 'N/A'}</td>
+                        <td>\${exhibition.spatialCoverage || 'N/A'}</td>
                         <td>\${exhibition.eventSite || 'N/A'}</td>
+                        <td>\${exhibition.genre || 'N/A'}</td>
+                        <td>\${exhibition.duration || 'N/A'}</td>
+                        <td>\${exhibition.numberPages || 'N/A'}</td>
+                        <td>\${exhibition.tableOfContents || 'N/A'}</td>
+                        <td class="scrollable-description">
+                            <div class="description-text"
+                                data-full-description="\${exhibition.author || 'N/A'}">
+                                \${exhibition.author.substring(0, 100) || 'N/A'}
+                            </div>
+                        </td>
                         <td>\${exhibition.contactPoint || 'N/A'}</td>
+                        <td>\${exhibition.contributor || 'N/A'}</td>
+                        <td>\${exhibition.audience || 'N/A'}</td>
+                        <td>\${exhibition.charge || 'N/A'}</td>
+                        <td>\${exhibition.period || 'N/A'}</td>
+                        <td>\${exhibition.eventPeriod || 'N/A'}</td>
                         <td class="scrollable-description">
     <div
         class="description-text"
@@ -204,14 +220,58 @@
         \${exhibition.description.substring(0, 100) || 'N/A'}
     </div>
 </td>
-                        <td><button type="button" class="edit-button" onclick="#">수정</button></td>
                         <td><button type="button" class="save-button" data-index="\${index}">저장</button></td>
                     </tr>
                 `;
                         tableBody.insertAdjacentHTML('beforeend', row);
                     });
 
+                    // 저장 버튼에 이벤트 리스너 추가
+                    document.querySelectorAll('.save-button').forEach(button => {
+                        button.addEventListener('click', async (event) => {
+                            const index = event.target.getAttribute('data-index');
+                            const exhibition = exhibitionData[index];
 
+                            // 내용 수정 후 저장할 데이터
+                            const exhibitionDataToSave = {
+                                title: exhibition.title || '',
+                                cntcInsttNm: exhibition.cntcInsttNm || '',
+                                collectedDate: exhibition.collectedDate || '',
+                                issuedDate: exhibition.issuedDate || '',
+                                imageUrl: exhibition.imageUrl || '',
+                                localId: exhibition.localId || '',
+                                url: exhibition.url || '',
+                                viewCount: exhibition.viewCount || 0,
+                                subDescription: exhibition.subDescription || '',
+                                spatialCoverage: exhibition.spatialCoverage || '',
+                                eventSite: exhibition.eventSite || '',
+                                genre: exhibition.genre || '',
+                                duration: exhibition.duration || '',
+                                numberPages: exhibition.numberPages || '',
+                                tableOfContents: exhibition.tableOfContents || '',
+                                author: exhibition.author || '',
+                                contactPoint: exhibition.contactPoint || '',
+                                contributor: exhibition.contributor || '',
+                                audience: exhibition.audience || 0,
+                                charge: exhibition.charge || '',
+                                period: exhibition.period || 0,
+                                eventPeriod: exhibition.eventPeriod || 0,
+                                description: exhibition.description || ''
+                            };
+
+                            try {
+                                const saveResponse = await axios.post('/api/admin/exhibitionsMaster', exhibition, {
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    }
+                                });
+                                alert('저장 성공: ' + saveResponse.data);
+                            } catch (error) {
+                                console.error('저장 실패:', error);
+                                alert('저장 중 오류가 발생했습니다.');
+                            }
+                        });
+                    });
                 } catch (error) {
                     console.error('Error fetching exhibition data:', error);
                     alert('데이터를 불러오는 데 실패했습니다.');

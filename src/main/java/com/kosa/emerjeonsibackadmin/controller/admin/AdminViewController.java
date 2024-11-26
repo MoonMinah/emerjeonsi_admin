@@ -2,6 +2,7 @@ package com.kosa.emerjeonsibackadmin.controller.admin;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,5 +28,30 @@ public class AdminViewController {
         modelAndView.addObject("userNo", userNo);
 
         return modelAndView;
+    }
+
+    @GetMapping("/exhibitionsData")
+    public String exhibitionsData() {
+        return "exhibitionsData";
+    }
+
+    @GetMapping("/exhibitionsDataDetail/{localId}")
+    public String exhibitionsDataDetail() {
+        return "exhibitionsDataDetail";
+    }
+
+    @CrossOrigin(origins = "http://localhost:9401")
+    @GetMapping("/exhibitions")
+    public String exhibitions() {
+        return "exhibitions";
+    }
+    @GetMapping("/exhibitionsDataEdit")
+    public String exhibitionsDataEdit() {
+        return "exhibitionsDataEdit";
+    }
+
+    @GetMapping("/exhibitionsEdit")
+    public String exhibitionsEdit() {
+        return "exhibitionsEdit";
     }
 }

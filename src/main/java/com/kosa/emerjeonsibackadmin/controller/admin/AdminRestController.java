@@ -1,6 +1,7 @@
 package com.kosa.emerjeonsibackadmin.controller.admin;
 
 import com.kosa.emerjeonsibackadmin.dto.Exhibition;
+import com.kosa.emerjeonsibackadmin.dto.ExhibitionData;
 import com.kosa.emerjeonsibackadmin.dto.User;
 import com.kosa.emerjeonsibackadmin.dto.UserHistory;
 import com.kosa.emerjeonsibackadmin.service.AdminService;
@@ -13,6 +14,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +24,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.URI;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -153,14 +157,14 @@ public class AdminRestController {
 
     @GetMapping("/exhibitions-origin")
     public ResponseEntity<String> exhibitionsOriginData() {
-        String serviceKey = "";
+        String serviceKey = "5013479c-edf8-46cd-8bf4-5ad7d7416898";
         String url = "http://api.kcisa.kr/openapi/API_CCA_145/request";;
 
         // URL 생성
         URI uri = UriComponentsBuilder.fromHttpUrl(url)
                 .queryParam("serviceKey", serviceKey)
                 .queryParam("resultType", "json")
-                .queryParam("numOfRows", "100")
+                .queryParam("numOfRows", "50")
                 .queryParam("pageNo", "1")
                 .build(true)
                 .toUri();
@@ -197,7 +201,7 @@ public class AdminRestController {
 //                System.out.println("연계기관명: " + item.get("CNTC_INSTT_NM"));
 //                System.out.println("수집일: " + item.get("COLLECTED_DATE"));
 //                System.out.println("자료생성일자: " + item.get("ISSUED_DATE"));
-//                System.out.println("소개(설명): " + item.get("DESCRIPTION"));
+                System.out.println("소개(설명): " + item.get("DESCRIPTION"));
 //                System.out.println("이미지주소: " + item.get("IMAGE_OBJECT"));
 //                System.out.println("전시ID: " + item.get("LOCAL_ID"));
 //                System.out.println("홈페이지주소: " + item.get("URL"));
@@ -231,17 +235,76 @@ public class AdminRestController {
         }
     }
 
-    @PostMapping("/exhibitions/save")
-    public String saveExhibitions(@RequestBody Map<String, Object> data) {
-        List<Exhibition> exhibitions = (List<Exhibition>) data.get("exhibitions"); // "exhibitions" 키에 맞게 조정
-        if (exhibitions != null && !exhibitions.isEmpty()) {
-            int resultExhibitionData = adminService.saveExhibitions(exhibitions);
-            // resultExhibitionData가 1이면 참, 0이면 거짓 데이터 유효성 검사 진행 로직 작성 필요
-            // 1이면 등록되어있는 데이터, 0이면 에러 처리
+    @CrossOrigin(origins = "http://localhost:9401")
+   @PostMapping("/exhibitions-data")
+    public ResponseEntity<String> saveExhibitionData(@RequestBody ExhibitionData exhibitionData) {
+        try {
+            // 데이터 저장 로직
+            adminService.saveExhibitionData(exhibitionData);
+            return ResponseEntity.ok("전시회 데이터가 저장되었습니다.");
+        } catch (Exception e) {
+            log.error("저장 중 오류 발생: {}", e.getMessage(), e);
+            return ResponseEntity.status(500).body("서버 오류가 발생했습니다.");
+        }
+    }
+    @CrossOrigin(origins = "http://localhost:9401")
+    @GetMapping("/exhibitionsDataEdit")
+    public ResponseEntity<List<ExhibitionData>> getExhibitionsDataEdit() {
+        try {
+            // Service를 통해 데이터를 가져옵니다.
+            List<ExhibitionData> exhibitionDataList = adminService.getAllExhibitionsData();
 
-            return "데이터 저장 완료";
-        } else {
-            return "저장할 데이터가 없습니다.";
+            // 데이터를 JSON으로 반환
+            return ResponseEntity.ok(exhibitionDataList);
+        } catch (Exception e) {
+            e.printStackTrace();
+            // 에러 발생 시 적절한 응답 반환
+            return ResponseEntity.status(500).body(null);
+        }
+    }
+
+   @CrossOrigin(origins = "http://localhost:9401")
+   @PostMapping("/exhibitionsMaster")
+    public ResponseEntity<String> saveExhibitionData(@RequestBody Exhibition exhibition) {
+        try {
+            // 데이터를 저장하는 로직 구현 (예: DB에 저장)
+            adminService.saveExhibition(exhibition);
+            return ResponseEntity.ok("데이터 저장 성공");
+        } catch (Exception e) {
+            log.error("데이터 저장 실패", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("데이터 저장 실패");
+        }
+    }
+
+    @CrossOrigin(origins = "http://localhost:9401")
+    @GetMapping("/exhibitions")
+    public ResponseEntity<List<Exhibition>> getExhibitions() {
+        try {
+            // Service를 통해 데이터를 가져옵니다.
+            List<Exhibition> exhibitionList = adminService.getAllExhibitions();
+
+            // 데이터를 JSON으로 반환
+            return ResponseEntity.ok(exhibitionList);
+        } catch (Exception e) {
+            e.printStackTrace();
+            // 에러 발생 시 적절한 응답 반환
+            return ResponseEntity.status(500).body(null);
+        }
+    }
+
+    @CrossOrigin(origins = "http://localhost:9401")
+    @GetMapping("/exhibitions/{localId}")
+    public ResponseEntity<Exhibition> getExhibitionByLocalId(@PathVariable @Valid String localId) {
+        try {
+            Exhibition exhibition = adminService.getExhibitionByLocalId(localId);
+            if (exhibition != null) {
+                return ResponseEntity.ok(exhibition);
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(null);
         }
     }
 }
