@@ -11,6 +11,7 @@
         <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
         <link href="/admin/css/styles.css" rel="stylesheet" />
         <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     </head>
     <body class="sb-nav-fixed">
         <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
@@ -77,7 +78,7 @@
                                 </nav>
                             </div>
                             <div class="sb-sidenav-menu-heading">Statistics</div>
-                            <a class="nav-link" href="charts.jsp">
+                            <a class="nav-link" href="/admin/chart">
                                 <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
                                 서비스 현황 통계
                             </a>
@@ -105,21 +106,27 @@
                                 <div class="card mb-4">
                                     <div class="card-header">
                                         <i class="fas fa-chart-area me-1"></i>
-                                        차트 1
+                                        차트 1 - 전시별 예약 비율
                                     </div>
-                                    <div class="card-body"><canvas id="myAreaChart" width="100%" height="40"></canvas></div>
+                                    <div class="card-body"><canvas id="exhibitionReservationChart" width="100%" height="40"></canvas></div>
                                 </div>
                             </div>
+                            <!-- 차트 2 - 시간대별 총 매출 -->
                             <div class="col-xl-6">
                                 <div class="card mb-4">
                                     <div class="card-header">
                                         <i class="fas fa-chart-bar me-1"></i>
-                                        차트 2
+                                        차트 2 - 시간대별 총 매출
+                                        <!-- 날짜 선택 및 조회 버튼 -->
+                                        <input type="date" id="selectedDate" class="form-control" style="width: 200px; display: inline-block; margin-left: 20px;" />
+                                        <button id="fetchDataButton" class="btn btn-primary" style="margin-left: 10px;">조회</button>
                                     </div>
-                                    <div class="card-body"><canvas id="myBarChart" width="100%" height="40"></canvas></div>
+                                    <div class="card-body">
+                                        <!-- 차트를 렌더링할 Canvas -->
+                                        <canvas id="hourlySalesChart" width="100%" height="40"></canvas>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
                         <div class="card mb-4">
                             <div class="card-header">
                                 <i class="fas fa-table me-1"></i>
@@ -161,9 +168,10 @@
         </div>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
         <script src="/admin/js/scripts.js"></script>
+        <script src="/admin/js/chart.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
-        <script src="/admin/assets/demo/chart-area-demo.js"></script>
-        <script src="/admin/assets/demo/chart-bar-demo.js"></script>
+<%--        <script src="/admin/assets/demo/chart-area-demo.js"></script>--%>
+<%--        <script src="/admin/assets/demo/chart-bar-demo.js"></script>--%>
         <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
         <script src="/admin/js/datatables-simple-demo.js"></script>
 
